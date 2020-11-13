@@ -50,7 +50,7 @@ namespace ID.QualityService.Domain.Ads
             if (this.PictureIds == null && this.Score > 0)
                 this.Score -= 10;
 
-            if (this.PictureIds != null && this.PictureIds.Any())
+            if (this.PictureIds != null && this.PictureIds.Any())                
                 this.Score = this.PictureIds.Sum(p => { return 20; });
         }
 

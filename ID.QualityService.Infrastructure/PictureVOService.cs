@@ -1,18 +1,17 @@
 ﻿using ID.QualityService.Domain.Ads;
 using ID.QualityService.Domain.Interfaces;
-using ID.QualityService.Repository.Persistence;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ID.QualityService.Repository
+namespace ID.QualityService.Infrastructure
 {
-    public class PictureVOService : IRepository<PictureVO>
+    public class PictureVOService : IServiceBase<PictureVO>
     {
-        private MemoryData memoryData;
+        private IMemoryData memoryData;
 
-        public PictureVOService()
+        public PictureVOService(IMemoryData memoryData)
         {
-            this.memoryData = new MemoryData();
+            this.memoryData = memoryData;
         }
 
         public IEnumerable<PictureVO> GetAll()

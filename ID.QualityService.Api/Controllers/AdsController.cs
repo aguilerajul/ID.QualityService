@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using ID.QualityService.Api.Models;
-using ID.QualityService.Domain.Ads;
 using ID.QualityService.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ID.QualityService.Api.Controllers
 {
@@ -12,28 +13,33 @@ namespace ID.QualityService.Api.Controllers
     public class AdsController : Controller
     {
         private readonly IMapper mapper;
-        private IRepository<AdVO> adVOService;
-        private IRepository<PictureVO> pictureVOService;
-
-        public AdsController(IMapper mapper, IRepository<AdVO> adVOService, IRepository<PictureVO> pictureVOService)
+        private ILogger<AdsController> logger;
+        private IAdVOService adVOService;
+        
+        public AdsController(IMapper mapper, ILogger<AdsController> logger, IAdVOService adVOService)
         {
             this.mapper = mapper;
+            this.logger = logger;
             this.adVOService = adVOService;
-            this.pictureVOService = pictureVOService;
         }
 
         // GET api/Ads        
-        [Route("qualityListing")]
+        [Route("qualityListing/{irrelevantDate}")]
         [HttpGet]
-        public ActionResult<IEnumerable<QualityAd>> qualityListing()
+        public ActionResult<IEnumerable<QualityAd>> qualityListing(DateTime? irrelevantDate)
         {
             try
             {
-                var pictures = this.pictureVOService.GetAll();
-                return Ok(this.mapper.Map<IEnumerable<PictureVO>>(pictures));
+                var irrelevantAds = this.adVOService.GetIrrelevantAds(irrelevantDate);
+                if (irrelevantAds == null)
+                    return NoContent();
+
+                var mapping = this.mapper.Map<IEnumerable<QualityAd>>(irrelevantAds);
+                return Ok(mapping);
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
+                logger.LogError("Error on AdsController -> qualityListing: ", ex);
                 return NotFound();
             }
         }
@@ -44,11 +50,14 @@ namespace ID.QualityService.Api.Controllers
         {
             try
             {
-                var pictures = this.adVOService.GetAll();
-                return Ok(this.mapper.Map<IEnumerable<AdVO>>(pictures));
+                var ads = this.adVOService.GetQualityAds();
+                var mapping = this.mapper.Map<IEnumerable<PublicAd>>(ads);
+
+                return Ok(this.mapper.Map<IEnumerable<PublicAd>>(mapping));
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
+                logger.LogError("Error on AdsController -> publicListing: ", ex);
                 return NotFound();
             }
         }
@@ -57,7 +66,16 @@ namespace ID.QualityService.Api.Controllers
         [Route("calculateScore")]
         public ActionResult calculateScore()
         {
-            return NotFound();
+            try
+            {
+                var score = this.adVOService.GetTotalScore();
+                return Ok(score);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error on AdsController -> calculateScore: ", ex);
+                return NotFound();
+            }
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using ID.QualityService.Domain.Ads;
 using ID.QualityService.Domain.Enums;
+using ID.QualityService.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace ID.QualityService.Repository.Persistence
+namespace ID.QualityService.Infrastructure.Persistence
 {
-    public class MemoryData
+    public class MemoryData : IMemoryData
     {
         private IList<AdVO> ads;
         private IList<PictureVO> pictures;
@@ -37,6 +38,8 @@ namespace ID.QualityService.Repository.Persistence
             ads.Add(new AdVO(6, Typology.GARAGE, "", new List<int> { 6 }, 300));
             ads.Add(new AdVO(7, Typology.GARAGE, "Garaje en el centro de Albacete", new List<int>(), 300));
             ads.Add(new AdVO(8, Typology.CHALET, "Maravilloso chalet situado en lAs afueras de un pequeño pueblo rural. El entorno es espectacular, las vistas magníficas. ¡Cómprelo ahora!", new List<int> { 1, 7 }, 300));
+
+            ads.Add(new AdVO(9, Typology.CHALET, "Chalet pequeño muy acojedor. Tiene unas magnificas vistas. ¡Cómprelo ahora!", new List<int> { 2, 3 }, 300, irrelevantSince: DateTime.UtcNow.AddDays(-2)));
         }
 
         private void SetPictures()

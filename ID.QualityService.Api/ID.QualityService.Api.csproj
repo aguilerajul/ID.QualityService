@@ -6,11 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ID.QualityService.Domain\ID.QualityService.Domain.csproj" />
-    <ProjectReference Include="..\ID.QualityService.Repository\ID.QualityService.Infrastructure.csproj" />
+    <ProjectReference Include="..\ID.QualityService.Infrastructure\ID.QualityService.Infrastructure.csproj" />
   </ItemGroup>
 
 
