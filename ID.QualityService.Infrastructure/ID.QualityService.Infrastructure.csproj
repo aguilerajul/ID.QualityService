@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>ID.QualityService.Infrastructure</AssemblyName>
+    <RootNamespace>ID.QualityService.Infrastructure</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ID.QualityService.Domain\ID.QualityService.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
