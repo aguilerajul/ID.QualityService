@@ -37,7 +37,7 @@ namespace ID.QualityService.Domain.Ads
             this.PictureIds.Add(pictureVoId);
         }
 
-        private void SetScore()
+        internal void SetScore()
         {
             SetScoreByPicture();
             SetScoreByDescription();
@@ -47,11 +47,13 @@ namespace ID.QualityService.Domain.Ads
 
         private void SetScoreByPicture()
         {
-            if (this.PictureIds == null && this.Score > 0)
+            if (this.PictureIds == null)
                 this.Score -= 10;
 
             if (this.PictureIds != null && this.PictureIds.Any())                
                 this.Score = this.PictureIds.Sum(p => { return 20; });
+
+            ClampScore();
         }
 
         private void SetScoreByDescription()
@@ -59,14 +61,16 @@ namespace ID.QualityService.Domain.Ads
             if (!string.IsNullOrWhiteSpace(this.Description))
                 this.Score += 5;
 
-            if (this.Typology == Typology.FLAT && this.Description.Length >= 20 && this.Description.Length <= 49)
+            if (this.Description.Length >= 20 && this.Description.Length <= 49)
                 this.Score += 10;
 
-            if (this.Typology == Typology.FLAT && this.Description.Length >= 50)
+            if (this.Typology != Typology.CHALET && this.Description.Length >= 50)
                 this.Score += 30;
 
             if (this.Typology == Typology.CHALET && this.Description.Length >= 50)
                 this.Score += 20;
+
+            ClampScore();
         }
 
         private void SetScoreBySpecificWords()
@@ -76,6 +80,8 @@ namespace ID.QualityService.Domain.Ads
                 if (this.Description.ToLower().Contains(specificWord.ToLower()))
                     this.Score += 5;
             }
+
+            ClampScore();
         }
 
         private void SetScoreByCompleteAds()
@@ -89,6 +95,13 @@ namespace ID.QualityService.Domain.Ads
                     )
                 )
                 this.Score += 40;
+
+            ClampScore();
+        }
+
+        private void ClampScore()
+        {
+            this.Score = Math.Clamp(this.Score.Value, 0, 100);
         }
     }
 }
